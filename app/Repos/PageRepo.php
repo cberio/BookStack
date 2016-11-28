@@ -5,6 +5,7 @@ use BookStack\Book;
 use BookStack\Chapter;
 use BookStack\Entity;
 use BookStack\Exceptions\NotFoundException;
+use BookStack\Notifications\PageUpdated;
 use BookStack\Services\AttachmentService;
 use Carbon\Carbon;
 use DOMDocument;
@@ -135,6 +136,8 @@ class PageRepo extends EntityRepo
 
         $draftPage->save();
         $this->saveRevision($draftPage, 'Initial Publish');
+
+        $draftPage->notify(new PageUpdated($draftPage));
         
         return $draftPage;
     }
@@ -346,6 +349,8 @@ class PageRepo extends EntityRepo
         if ($oldHtml !== $input['html'] || $oldName !== $input['name'] || $input['summary'] !== null) {
             $this->saveRevision($page, $input['summary']);
         }
+
+        $page->notify(new PageUpdated($page));
 
         return $page;
     }

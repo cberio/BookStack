@@ -1,8 +1,12 @@
 <?php namespace BookStack;
 
 
+use Illuminate\Notifications\Notifiable;
+
 class Page extends Entity
 {
+    use Notifiable;
+
     protected $fillable = ['name', 'html', 'priority', 'markdown'];
 
     protected $simpleAttributes = ['name', 'id', 'slug'];
@@ -92,4 +96,8 @@ class Page extends Entity
         return mb_convert_encoding($text, 'UTF-8');
     }
 
+    public function routeNotificationForSlack()
+    {
+        return env('WEBHOOK_URL');
+    }
 }
