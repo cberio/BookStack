@@ -3,6 +3,7 @@
 namespace BookStack\Notifications;
 
 use BookStack\Page;
+use BookStack\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\SlackMessage;
 use Illuminate\Notifications\Notification;
@@ -46,7 +47,8 @@ class PageUpdated extends Notification
                     ->fields([
                         '제목' => $this->page->name,
                         'Book' => $this->page->book->name,
-                        'Chapter' => $this->page->chapter->name
+                        'Chapter' => $this->page->chapter->name,
+                        '작성자' => User::find($this->page->created_by)->name
                     ]);
             });
     }
