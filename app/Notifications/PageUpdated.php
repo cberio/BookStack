@@ -34,7 +34,10 @@ class PageUpdated extends Notification
      */
     public function via($notifiable)
     {
-        return ['slack'];
+        if(env('APP_ENV') != 'local')
+            return ['slack'];
+        else
+            return [];
     }
 
     public function toSlack($notifiable)
