@@ -121,6 +121,7 @@
             </div>
 
         </div>
+        @include('partials/disqus-comment')
     </div>
 
     @include('partials/highlight')
