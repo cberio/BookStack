@@ -51,7 +51,8 @@ class PageUpdated extends Notification
                         '제목' => $this->page->name,
                         'Book' => $this->page->book->name,
                         'Chapter' => $this->page->chapter->name,
-                        '작성자' => User::find($this->page->created_by)->name
+                        '작성자' => User::find($this->page->created_by)->name,
+                        '수정자' => User::find($this->page->updated_by)->name
                     ]);
             });
     }
