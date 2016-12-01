@@ -676,7 +676,7 @@ class PageRepo extends EntityRepo
         $now = \Carbon\Carbon::now();
         $prev_revision = $page->getPreviousRevision();
 
-        if($prev_revision->updated_at->diffInMinutes($now) > 60)
+        if(!isset($prev_revision->updated_at) or $prev_revision->updated_at->diffInMinutes($now) > 60)
             $page->notify(new PageUpdated($page));
     }
 }
