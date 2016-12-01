@@ -137,7 +137,8 @@ class PageRepo extends EntityRepo
         $draftPage->save();
         $this->saveRevision($draftPage, 'Initial Publish');
 
-        $draftPage->notify(new PageUpdated($draftPage));
+        //$draftPage->notify(new PageUpdated($draftPage));
+        $this->sendNotification($draftPage);
         
         return $draftPage;
     }
@@ -350,7 +351,8 @@ class PageRepo extends EntityRepo
             $this->saveRevision($page, $input['summary']);
         }
 
-        $page->notify(new PageUpdated($page));
+        //$page->notify(new PageUpdated($page));
+        $this->sendNotification($page);
 
         return $page;
     }
@@ -668,4 +670,13 @@ class PageRepo extends EntityRepo
         return $this->pageQuery()->orderBy('updated_at', 'desc')->paginate($count);
     }
 
+
+    public function sendNotification(Page $page)
+    {
+        $now = \Carbon\Carbon::now();
+        $prev_revision = $page->getPreviousRevision();
+
+        if($prev_revision->updated_at->diffInMinutes($now) > 60)
+            $page->notify(new PageUpdated($page));
+    }
 }

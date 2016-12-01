@@ -34,27 +34,47 @@ class PageUpdated extends Notification
      */
     public function via($notifiable)
     {
-        if(env('APP_ENV') != 'local')
-            return ['slack'];
-        else
-            return [];
+        return ['slack'];
     }
 
     public function toSlack($notifiable)
     {
-        return (new SlackMessage())
-            ->success()
-            ->content(':alarm_clock: hello-wiki :alarm_clock:')
-            ->attachment(function ($attachment){
-                $attachment->title($this->page->name, $this->page->getUrl())
-                    ->fields([
-                        '제목' => $this->page->name,
-                        'Book' => $this->page->book->name,
-                        'Chapter' => $this->page->chapter->name,
-                        '작성자' => User::find($this->page->created_by)->name,
-                        '수정자' => User::find($this->page->updated_by)->name
-                    ]);
-            });
+        $prev_revision = $this->page->getPreviousRevision();
+
+        if (empty($prev_revision)){
+            /*
+             * send notification when new page created
+            */
+
+            return (new SlackMessage())
+                ->success()
+                ->content(':alarm_clock: hello-wiki new page created:alarm_clock:')
+                ->attachment(function ($attachment){
+                    $attachment->title($this->page->name, $this->page->getUrl())
+                        ->fields([
+                            '제목' => $this->page->name,
+                            'Book' => $this->page->book->name,
+                            'Chapter' => $this->page->chapter->name,
+                            '작성자' => User::find($this->page->created_by)->name,
+                            '수정자' => User::find($this->page->updated_by)->name
+                        ]);
+                });
+        } else {
+
+            return (new SlackMessage())
+                ->success()
+                ->content(':alarm_clock: hello-wiki new page updated:alarm_clock:')
+                ->attachment(function ($attachment) {
+                    $attachment->title($this->page->name, $this->page->getUrl())
+                        ->fields([
+                            '제목' => $this->page->name,
+                            'Book' => $this->page->book->name,
+                            'Chapter' => $this->page->chapter->name,
+                            '작성자' => User::find($this->page->created_by)->name,
+                            '수정자' => User::find($this->page->updated_by)->name
+                        ]);
+                });
+        }
     }
 
 

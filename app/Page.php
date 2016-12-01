@@ -100,4 +100,13 @@ class Page extends Entity
     {
         return env('WEBHOOK_URL');
     }
+
+    public function getPreviousRevision()
+    {
+        return $this->revisions()
+            ->skip(1)
+            ->take(1)
+            ->orderBy('id', 'desc')
+            ->first();
+    }
 }
